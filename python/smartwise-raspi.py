@@ -104,9 +104,6 @@ def handle(msg):
             markup = ReplyKeyboardRemove()
             smartwiseBot.sendMessage(chatId, mensagem, reply_markup=markup)
 
-    if command == '/janelas' or command == '/portas':
-        smartwiseBot.sendMessage(chatId, 'Ainda não fui programado para fazer isso \U0001F62C')
-
     if command == '/eletrodomesticos':
         markup = ReplyKeyboardMarkup(keyboard=[
             [KeyboardButton(text='\U0000274C Ventilador 1' if eletro[0]['ligado'] else '\U00002714 Ventilador 1'),
@@ -158,9 +155,21 @@ def handle(msg):
         try:
             minutos = int(command[:2])
             eletro[numEletro]['ligado'] = True
-            eletro[numEletro]['hora'] = int(datetime.now().hour)
-            eletro[numEletro]['min'] = (int(datetime.now().minute) + minutos) % 60
-            eletro[numEletro]['seg'] = int(datetime.now().second)
+
+            data = datetime.now()
+            hora = data.hour
+            minuto = data.minute
+            
+            minn = int(minuto) + int(minutos)
+
+            if minn > 60:
+                eletro[numEletro]['hora'] = int(hora) + 1
+            else:
+                eletro[numEletro]['hora'] = int(hora)
+
+            eletro[numEletro]['min'] = minn % 60
+            eletro[numEletro]['seg'] = int(data.second)
+
             markup = ReplyKeyboardMarkup(keyboard=[
                 [KeyboardButton(text='\U0000274C Ventilador 1' if eletro[0]['ligado'] else '\U00002714 Ventilador 1'),
                 KeyboardButton(text='\U0000274C Ventilador 2' if eletro[1]['ligado'] else '\U00002714 Ventilador 2')],
@@ -193,6 +202,35 @@ def handle(msg):
             mensagem = 'Não entendi o que você quis dizer \U0001F625'
             markup = ReplyKeyboardRemove()
             smartwiseBot.sendMessage(chatId, mensagem, reply_markup=markup)
+
+    if command == '/portas':
+        markup = ReplyKeyboardMarkup(keyboard=[
+            [KeyboardButton(text='\U0001F6AA Porta Principal'), KeyboardButton(text='\U0001F6AA Porta 1')],
+            [KeyboardButton(text='\U0001F6AA Porta 2'), KeyboardButton(text='\U0001F6AA Porta 3')],
+            [KeyboardButton(text='\U0001F6AA Porta 4'), KeyboardButton(text='\U0001F6AA Porta 5')],
+            [KeyboardButton(text='Concluir')]])
+        smartwiseBot.sendMessage(chatId, 'Qual porta você gostaria de verificar?', reply_markup=markup)
+
+    if '\U0001F6AA Porta Principal' in command:
+        # Fazer a leitura da entrada do raspi
+        smartwiseBot.sendMessage(chatId, 'Não sei ainda')
+
+    elif '\U0001F6AA Porta ' in command:
+        smartwiseBot.sendMessage(chatId, 'Porta indisponível.')
+
+    if command == '/janelas':
+        markup = ReplyKeyboardMarkup(keyboard=[
+            [KeyboardButton(text='Janela 1'), KeyboardButton(text='Janela 2')],
+            [KeyboardButton(text='Janela 3'), KeyboardButton(text='Janela 4')],
+            [KeyboardButton(text='Concluir')]])
+        smartwiseBot.sendMessage(chatId, 'Qual janela você gostaria de verificar?', reply_markup=markup)
+
+    if 'Janela 1' in command:
+        # Fazer a leitura da entrada do raspi
+        smartwiseBot.sendMessage(chatId, 'Não sei ainda')
+
+    elif 'Janela ' in command:
+        smartwiseBot.sendMessage(chatId, 'Janela indisponível.')
 
 def timer(bot):
     tempo = datetime.now()
