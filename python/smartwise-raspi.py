@@ -218,7 +218,10 @@ def handle(msg):
 
     if '\U0001F6AA Porta Principal' in command:
         # Fazer a leitura da entrada do raspi
-        smartwiseBot.sendMessage(chatId, 'Não sei ainda')
+        if janp[0].is_pressed:
+            smartwiseBot.sendMessage(chatId, 'A porta está aberta!')
+        else:
+            smartwiseBot.sendMessage(chatId, 'A porta está fechada!')
 
     elif '\U0001F6AA Porta ' in command:
         smartwiseBot.sendMessage(chatId, 'Porta indisponível.')
@@ -232,7 +235,10 @@ def handle(msg):
 
     if 'Janela 1' in command:
         # Fazer a leitura da entrada do raspi
-        smartwiseBot.sendMessage(chatId, 'Não sei ainda')
+        if janp[1].is_pressed:
+            smartwiseBot.sendMessage(chatId, 'A janela está aberta!')
+        else:
+            smartwiseBot.sendMessage(chatId, 'A janela está fechada!')
 
     elif 'Janela ' in command:
         smartwiseBot.sendMessage(chatId, 'Janela indisponível.')
