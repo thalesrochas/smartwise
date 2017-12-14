@@ -4,6 +4,7 @@ from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboar
 from datetime import datetime
 import time
 import sys
+from gpiozero import LED, Button
 
 # Para possibilitar a impressao de emoji
 nbm = dict.fromkeys(range(0x10000, sys.maxunicode+1), 0xfffd)
@@ -17,6 +18,10 @@ eletro = [
     {'ligado': False, 'hora': None, 'min': None, 'seg': None},
     {'ligado': False, 'hora': None, 'min': None, 'seg': None},
     {'ligado': False, 'hora': None, 'min': None, 'seg': None}]
+
+luzes = [LED(5), LED(6), LED(13), LED(19), LED(26), LED(21)]
+eletros = LED(20)
+janp = [Button(23), Button(24)]
 
 numEletro = None
 
@@ -39,7 +44,7 @@ def handle(msg):
             '/luzes - Posso ajudá-lo a verificar as luzes da casa, ligando ou desligando-as!\n'
             '/eletrodomesticos - Posso ajudá-lo a ligar e desligar alguns eletrodomésticos!\n'
             '/janelas - As janelas estão abertas ou fechadas?\n'
-            '/portas - \U0001F6AA E as portas da casa?\n'
+            '/portas - E as portas da casa?\n'
             '/cancelar - Cancela a ação atual.')
 
     if command == '/cancelar':
@@ -245,6 +250,21 @@ def timer(bot):
             bot.sendMessage(25245002, 'O Ventilador ' + str(cont) + ' foi desligado!')
 
 
+def atualizar():
+    cont = 0
+    for i in luz:
+        if i:
+            luzes[cont].on()
+        else:
+            luzes[cont].off()
+        cont = cont+1
+
+    if eletro[0]['ligado']:
+        eletros.on()
+    else:
+        eletros.off()
+
+
 # Token
 smartwiseBot = telepot.Bot('421896367:AAHczYKBgmiAcWsuAsU1gsRIu6hAXnPEjEg')
 
@@ -252,6 +272,7 @@ MessageLoop(smartwiseBot, handle).run_as_thread()
 
 while True:
     timer(smartwiseBot)
+    atualizar()
     time.sleep(1)
 
 '''
